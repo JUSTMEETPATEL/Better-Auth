@@ -11,15 +11,19 @@ import Link from "next/link";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInFormSchema } from "@/lib/auth-schema";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
-
-
-
 
 const SignIn = () => {
   // 1. Define your form.
@@ -49,14 +53,21 @@ const SignIn = () => {
         onSuccess: () => {
           form.reset();
         },
-        onError: (ctx) => {
+        onError: async (ctx) => {
+          if (ctx.error.status === 403) {
+            await authClient.sendVerificationEmail({
+              email,
+              callbackURL: "/dashboard" // The redirect URL after verification
+          })
+          alert("Please verify your email")
+          }
           alert(ctx.error.message);
         },
       }
     );
     console.log(data);
     if (error) {
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
   }
   return (
@@ -90,13 +101,19 @@ const SignIn = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type = "password" placeholder="Enter your password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">Submit</Button>
+            <Button className="w-full" type="submit">
+              Submit
+            </Button>
           </form>
         </Form>
       </CardContent>
