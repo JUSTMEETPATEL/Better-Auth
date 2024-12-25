@@ -12,12 +12,19 @@ import Link from "next/link";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signUpFormSchema } from "@/lib/auth-schema";
-
-
+import { authClient } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 const SignUp = () => {
   // 1. Define your form.
@@ -31,16 +38,40 @@ const SignUp = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
+    const { name, email, password } = values;
+    const { data, error } = await authClient.signUp.email(
+      {
+        email,
+        password,
+        name,
+        callbackURL: "/signin",
+      },
+      {
+        onRequest: () => {
+          toast({
+            title: "Please Wait...",
+          });
+        },
+        onSuccess: () => {
+          form.reset();
+        },
+        onError: (ctx) => {
+          alert(ctx.error.message);
+        },
+      }
+    );
+    console.log(data);
+    if (error) {
+      throw new Error(error.message)
+    }
   }
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Sign Up</CardTitle>
-        <CardDescription>
-          Welcome! Please Sign Up to continue
-        </CardDescription>
+        <CardDescription>Welcome! Please Sign Up to continue</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -78,13 +109,19 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type = "password" placeholder="Enter your password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">Submit</Button>
+            <Button className="w-full" type="submit">
+              Submit
+            </Button>
           </form>
         </Form>
       </CardContent>
