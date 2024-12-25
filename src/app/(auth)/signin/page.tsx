@@ -57,17 +57,26 @@ const SignIn = () => {
           if (ctx.error.status === 403) {
             await authClient.sendVerificationEmail({
               email,
-              callbackURL: "/dashboard" // The redirect URL after verification
-          })
-          alert("Please verify your email")
+              callbackURL: "/dashboard", // The redirect URL after verification
+            });
+            toast({
+              title: "Please verify your email",
+              description: "Email verification has been sent, kindly verify",
+            });
           }
-          alert(ctx.error.message);
+          toast({
+            title:"Error",
+            description:ctx.error.message
+          })
         },
       }
     );
     console.log(data);
     if (error) {
-      throw new Error(error.message);
+      toast({
+        title:"Error",
+        description:error.message
+      })
     }
   }
   return (
