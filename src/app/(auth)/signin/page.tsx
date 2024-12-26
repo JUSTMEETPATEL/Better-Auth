@@ -26,7 +26,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 
 const SignIn = () => {
-  // 1. Define your form.
+
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -35,7 +35,7 @@ const SignIn = () => {
     },
   });
 
-  // 2. Define a submit handler.
+
   async function onSubmit(values: z.infer<typeof signInFormSchema>) {
     const { email, password } = values;
     const { data, error } = await authClient.signIn.email(
@@ -57,7 +57,7 @@ const SignIn = () => {
           if (ctx.error.status === 403) {
             await authClient.sendVerificationEmail({
               email,
-              callbackURL: "/dashboard", // The redirect URL after verification
+              callbackURL: "/dashboard", 
             });
             toast({
               title: "Please verify your email",
@@ -65,18 +65,18 @@ const SignIn = () => {
             });
           }
           toast({
-            title:"Error",
-            description:ctx.error.message
-          })
+            title: "Error",
+            description: ctx.error.message,
+          });
         },
       }
     );
     console.log(data);
     if (error) {
       toast({
-        title:"Error",
-        description:error.message
-      })
+        title: "Error",
+        description: error.message,
+      });
     }
   }
   return (
