@@ -26,7 +26,6 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 
 const SignIn = () => {
-
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -34,7 +33,6 @@ const SignIn = () => {
       password: "",
     },
   });
-
 
   async function onSubmit(values: z.infer<typeof signInFormSchema>) {
     const { email, password } = values;
@@ -57,7 +55,7 @@ const SignIn = () => {
           if (ctx.error.status === 403) {
             await authClient.sendVerificationEmail({
               email,
-              callbackURL: "/dashboard", 
+              callbackURL: "/dashboard",
             });
             toast({
               title: "Please verify your email",
@@ -79,6 +77,8 @@ const SignIn = () => {
       });
     }
   }
+
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -120,6 +120,15 @@ const SignIn = () => {
                 </FormItem>
               )}
             />
+            <p className="text-sm text-muted-foreground">
+              Forgot Password?{" "}
+              <Link
+                href="/forgot-password"
+                className="text-primary hover:underline"
+              >
+                Reset Password
+              </Link>
+            </p>
             <Button className="w-full" type="submit">
               Submit
             </Button>

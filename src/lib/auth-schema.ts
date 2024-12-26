@@ -21,3 +21,23 @@ export const signInFormSchema = signUpFormSchema.pick({
   email: true,
   password: true,
 });
+
+export const forgotPasswordFormSchema = signUpFormSchema.pick({
+  email: true,
+});
+
+export const resetPasswordFormSchema = z
+  .object({
+    newpassword: z
+      .string()
+      .min(8, { message: "Passord must be atleast 8 character long" })
+      .max(50, { message: "Password cannot exceed 50 characters" }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Passord must be atleast 8 character long" })
+      .max(50, { message: "Password cannot exceed 50 characters" }),
+  })
+  .refine((data) => data.newpassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
