@@ -78,7 +78,6 @@ const SignIn = () => {
     }
   }
 
-
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
@@ -134,6 +133,13 @@ const SignIn = () => {
             </Button>
           </form>
         </Form>
+        <Button
+          onClick={async () => await authClient.signIn.passkey()}
+          className="w-full mt-4"
+          variant="outline"
+        >
+          Sign in with passkey
+        </Button>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">

@@ -1,22 +1,25 @@
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+"use client";
 
-const Page = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+import { redirect } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { handler } from "./action";
+
+const Page = () => {
+  const session = useSession();
   if (!session) {
     return redirect("/");
   }
-  const user = session?.user;
+
   return (
     <div>
-      <h1>Dashboard</h1>
-      <ul>
-        <li>Name: {user.name}</li>
-        <li>Email: {user.email}</li>
-      </ul>
+      <Button
+          onClick={handler}
+          className="w-full mt-4"
+          variant="outline"
+        >
+          Add a passkey
+        </Button>
     </div>
   );
 };

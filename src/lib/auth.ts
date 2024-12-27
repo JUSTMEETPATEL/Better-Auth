@@ -2,8 +2,11 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma";
 import { sendEmail } from "./email";
+import { passkey } from "better-auth/plugins/passkey"
 
 export const auth = betterAuth({
+  plugins: [passkey()],
+  trustedOrigins: ["http://192.168.29.9:3000"],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
